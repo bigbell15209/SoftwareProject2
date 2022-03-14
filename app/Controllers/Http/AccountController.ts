@@ -4,6 +4,8 @@ export default class AccountController {
   public async update({ request, response }: HttpContextContract) {
     request;
     response;
-    return "sfsdffdssdf";
+
+    return "TO BE IMPLEMENTED"
+    
   }
 }
