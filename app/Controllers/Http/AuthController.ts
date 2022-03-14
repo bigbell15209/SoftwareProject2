@@ -1,0 +1,82 @@
+import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
+import mongoose from "mongoose";
+import Env from "@ioc:Adonis/Core/Env";
+import { v4 as uuid } from "uuid";
+const User = mongoose.model("User");
+const jwt = require("jsonwebtoken");
+import Hash from "@ioc:Adonis/Core/Hash";
+
+export default class AuthController {
+  public async signUp({ request, response }: HttpContextContract) {
+    const { email, userType, password, address, firstName, lastName } =
+      request.all();
+    const validator = require("email-validator");
+    //TODO add null validation for address
+    if (!userType || [1, 2].indexOf(userType) === -1)
+      return response.badRequest({ error: "User type is invalid." });
+    if (!firstName || !lastName)
+      return response.badRequest({
+        error: "Your first name and last name are required.",
+      });
+    if (!validator.validate(email))
+      return response.badRequest({
+        error: "Email is invalid.",
+      });
+    if (password.length < 6)
+      return response.badRequest({
+        error: "Password must be at least 6 characters long.",
+      });
+
+    const normalize = require("normalize-email");
+    const normalizedEmail = normalize(email);
+    const existingUser = await User.findOne({ email: normalizedEmail });
+    if (!!existingUser)
+      return response.conflict({
+        error: "This email is already in use.",
+      });
+
+    const userId = uuid();
+    const newUser = await User.create({
+      userId,
+      userType,
+      email: normalizedEmail,
+      firstName,
+      lastName,
+      address,
+      password,
+      status: 1,
+    });
+
+    //return token with user details
+    const token = jwt.sign({ sub: userId }, Env.get("JWT_SECRET"), {
+      expiresIn: "7d",
+    });
+    return response.created({
+      user: newUser,
+      token,
+    });
+  }
+
+  public async signIn({ request, response }: HttpContextContract) {
+    const { email, password } = request.all();
+
+    const validator = require("email-validator");
+    if (!validator.validate(email))
+      return response.badRequest({
+        error: "Email is invalid.",
+      });
+    const normalize = require("normalize-email");
+    const normalizedEmail = normalize(email);
+
+    const user = await User.findOne({ email: normalizedEmail });
+    if (!user || !(await Hash.verify(user["password"], password)))
+      return response.badRequest({ error: "Email or password is incorrect." });
+
+    //return token with user details
+    const token = jwt.sign({ sub: user["userId"] }, Env.get("JWT_SECRET"), {
+      expiresIn: "7d",
+    });
+
+    return { user: user, token };
+  }
+}
