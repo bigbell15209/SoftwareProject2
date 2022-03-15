@@ -5,9 +5,21 @@ import Encryption from "@ioc:Adonis/Core/Encryption";
 
 const userSchema = new Schema({
   userId: String,
-  userType: Number,
-  firstName: String,
-  lastName: String,
+  userType: {
+    type: Number,
+    required: true,
+    enum: [1, 2],
+  },
+  firstName: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  lastName: {
+    type: String,
+    required: true,
+    trim: true,
+  },
   email: String,
   password: String,
   address: {
