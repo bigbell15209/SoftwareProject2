@@ -14,3 +14,4 @@ mongoose.connect(Env.get("MONGODB_URL"));
 
 import "App/Models/User"
 import "App/Models/Shop"
+import "App/Models/CoffeeBean"
