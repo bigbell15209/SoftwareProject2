@@ -5,6 +5,7 @@ import { v4 as uuid } from "uuid";
 const User = mongoose.model("User");
 const jwt = require("jsonwebtoken");
 import Hash from "@ioc:Adonis/Core/Hash";
+import createShop from "App/Helpers/CreateShop";
 
 export default class AuthController {
   public async signUp({ request, response }: HttpContextContract) {
@@ -22,7 +23,7 @@ export default class AuthController {
       return response.badRequest({
         error: "Email is invalid.",
       });
-    if (password.length < 6)
+    if (password?.length < 6)
       return response.badRequest({
         error: "Password must be at least 6 characters long.",
       });
@@ -36,7 +37,8 @@ export default class AuthController {
       });
 
     const userId = uuid();
-    const newUser = await User.create({
+
+    await User.create({
       userId,
       userType,
       email: normalizedEmail,
@@ -47,10 +49,27 @@ export default class AuthController {
       status: 1,
     });
 
+    let shop = null;
+    if (userType === 2) {
+      const { shop } = request.body();
+      if (!shop)
+        return response.badRequest({
+          error: "Please enter your shop's details.",
+        });
+      const createdShop = await createShop(userId, shop);
+      if (!createdShop)
+        return response.badRequest({
+          error:
+            "Something went wrong with creating your shop. Please try again.",
+        });
+    }
+
     //return token with user details
     const token = jwt.sign({ sub: userId }, Env.get("JWT_SECRET"), {
       expiresIn: "7d",
     });
+    const newUser = await User.findOne({ userId });
+
     return response.created({
       user: newUser,
       token,
@@ -76,7 +95,6 @@ export default class AuthController {
     const token = jwt.sign({ sub: user["userId"] }, Env.get("JWT_SECRET"), {
       expiresIn: "7d",
     });
-
-    return { user: user, token };
+    return { user, token };
   }
 }
