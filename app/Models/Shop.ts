@@ -27,10 +27,6 @@ const shopSchema = new Schema({
       required: true,
     },
   },
-  deliveryRange: {
-    type: Number,
-    required: true,
-  },
   status: {
     type: Number,
     default: 1,
@@ -44,5 +40,6 @@ const shopSchema = new Schema({
     default: Date.now,
   },
 });
+shopSchema.index({ location: "2dsphere" });
 
 mongoose.model("Shop", shopSchema);
