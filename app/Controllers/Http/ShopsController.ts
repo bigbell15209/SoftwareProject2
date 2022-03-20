@@ -12,7 +12,7 @@ export default class ShopsController {
             type: "Point",
             coordinates: [lng, lat],
           },
-          $maxDistance: 1_000_000_000_000,
+          $maxDistance: 100_000,
           $minDistance: 0,
         },
       },
