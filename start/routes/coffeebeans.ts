@@ -4,6 +4,7 @@ Route.group(() => {
   Route.get("/", "CoffeeBeansController.getAll");
   Route.post("create", "CoffeeBeansController.create");
   Route.post("update", "CoffeeBeansController.update");
+  Route.post("delete", "CoffeeBeansController.delete");
 })
   .prefix("/coffeebeans")
   .middleware("jwtAuth");
