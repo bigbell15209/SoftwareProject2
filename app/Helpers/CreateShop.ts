@@ -13,11 +13,13 @@ export default async function createShop(ownerId: string, shop: any) {
         type: "Point",
         coordinates: [coords.lng, coords.lat],
       },
+      userId: ownerId,
       deliveryRange,
       status: 1,
     });
     return newShop;
-  } catch {
+  } catch(err) {
+    console.log(err)
     return null;
   }
 }

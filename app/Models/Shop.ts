@@ -27,6 +27,7 @@ const shopSchema = new Schema({
       required: true,
     },
   },
+  userId: String,
   status: {
     type: Number,
     default: 1,

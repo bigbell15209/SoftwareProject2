@@ -4,18 +4,28 @@ import Hash from "@ioc:Adonis/Core/Hash";
 const User = mongoose.model("User");
 
 export default class AccountController {
+  public async me({request, response}){
+    const user = request["user"]!;
+    return user
+  }
   public async update({ request, response }: HttpContextContract) {
     const user = request["user"]!;
     const { firstName, lastName, address } = request.body();
+
+  
+    
+    
+    
+    
     //TODO add empty string validations
-    user.firstName = firstName || user.firstName;
-    user.lastName = lastName || user.lastName;
+    user.firstName = firstName.length > 0 ? firstName : user.firstName;
+    user.lastName = lastName.length > 0 ? lastName : user.lastName;
     if (address) {
       const { street, city, province } = address;
       user.address = {
-        street: street || user.address.street,
-        city: city || user.address.city,
-        province: province || user.address.province,
+        street: street.length > 0 ? street : user.address.street,
+        city: city.length > 0 ? city : user.address.city,
+        province: province.length > 0 ? province : user.address.province,
       };
     }
     await user.save()

@@ -6,6 +6,7 @@ const User = mongoose.model("User");
 const jwt = require("jsonwebtoken");
 import Hash from "@ioc:Adonis/Core/Hash";
 import createShop from "App/Helpers/CreateShop";
+const Shop = mongoose.model("Shop");
 
 export default class AuthController {
   public async signUp({ request, response }: HttpContextContract) {
@@ -37,19 +38,7 @@ export default class AuthController {
       });
 
     const userId = uuid();
-
-    await User.create({
-      userId,
-      userType,
-      email: normalizedEmail,
-      firstName,
-      lastName,
-      address,
-      password,
-      status: 1,
-    });
-
-    let shop = null;
+      let newShop = null;
     if (userType === 2) {
       const { shop } = request.body();
       if (!shop)
@@ -62,14 +51,25 @@ export default class AuthController {
           error:
             "Something went wrong with creating your shop. Please try again.",
         });
+      newShop = createdShop;
     }
+    await User.create({
+      userId,
+      userType,
+      email: normalizedEmail,
+      firstName,
+      lastName,
+      address,
+      password,
+      status: 1,
+    });
 
     //return token with user details
     const token = jwt.sign({ sub: userId }, Env.get("JWT_SECRET"), {
       expiresIn: "7d",
     });
     const newUser = await User.findOne({ userId });
-
+    if (newShop) newUser!["shop"] = await Shop.findOne({ shopId: newShop["shopId"] });
     return response.created({
       user: newUser,
       token,

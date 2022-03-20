@@ -27,3 +27,4 @@ Route.get('/', async () => {
 import "./routes/auth"
 import "./routes/account"
 import "./routes/shops"
+import "./routes/coffeebeans"
