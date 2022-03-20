@@ -51,4 +51,21 @@ export default class CoffeeBeansController {
     await coffeeBean.save();
     return response.ok(coffeeBean);
   }
+
+  public async delete({request, response}){
+    const shopId = await Shop.find({ userId: request["user"]!.userId });
+    const coffeeBeanId = request.input("coffeeBeanId");
+    if (!coffeeBeanId)
+      return response.badRequest({ error: "Missing coffeeBeanId" });
+    const coffeeBean = await CoffeeBean.findOne({ coffeeBeanId });
+    if (!coffeeBean)
+      return response.notFound({ error: "CoffeeBean not found" });
+    if (coffeeBean.shopId !== shopId.shopId)
+      return response.unauthorized({ error: "Unauthorized" });
+    await coffeeBean.delete();
+    return response.noContent();
+  }
+
+
+
 }
