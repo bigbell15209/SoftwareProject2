@@ -16,16 +16,9 @@ const shopSchema = new Schema({
     required: true,
   },
   image: String,
-  location: {
-    type: {
-      type: String,
-      enum: ["Point"],
-      required: true,
-    },
-    coordinates: {
-      type: [Number],
-      required: true,
-    },
+  location:{
+    lat: Number,
+    lng: Number,
   },
   userId: String,
   status: {
