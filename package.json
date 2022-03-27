@@ -20,6 +20,7 @@
     "@adonisjs/repl": "^3.1.9",
     "@zakodium/adonis-mongodb": "^0.13.0",
     "email-validator": "^2.0.4",
+    "geolib": "^3.3.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.6",
     "normalize-email": "^1.1.1",
