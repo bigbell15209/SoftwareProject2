@@ -2,11 +2,10 @@ import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 const mongoose = require("mongoose");
 const CoffeeBean = mongoose.model("CoffeeBean");
 const Shop = mongoose.model("Shop");
-import {v4 as uuid} from "uuid";
+import { v4 as uuid } from "uuid";
 
 export default class CoffeeBeansController {
   public async getAll({ request, response }) {
-    console.log(request["user"]);
     const userId = request["user"]!.userId;
     const shop = await Shop.findOne({ userId });
     const coffeeBeans = await CoffeeBean.find({ shopId: shop.shopId });
@@ -27,19 +26,34 @@ export default class CoffeeBeansController {
       origin,
       roastingLevel,
       price,
-      shopId: shop.shopId,  
+      shopId: shop.shopId,
     });
-    return response.created(newBean)
+    return response.created(newBean);
   }
 
-
-  public async update ({request, response}){
-    const { coffeeBeanId, name, description, specie, origin, roastingLevel, price } = request.body();
+  public async details({ request, response }) {
+    const { id: coffeeBeanId } = request.qs();
 
     const coffeeBean = await CoffeeBean.findOne({ coffeeBeanId });
-    if (!coffeeBean) 
+    if (!coffeeBean)
       return response.notFound({ error: "CoffeeBean not found" });
+    return response.ok(coffeeBean);
+  }
 
+  public async update({ request, response }) {
+    const {
+      coffeeBeanId,
+      name,
+      description,
+      specie,
+      origin,
+      roastingLevel,
+      price,
+    } = request.body();
+
+    const coffeeBean = await CoffeeBean.findOne({ coffeeBeanId });
+    if (!coffeeBean)
+      return response.notFound({ error: "CoffeeBean not found" });
 
     coffeeBean.name = name;
     coffeeBean.description = description;
@@ -47,12 +61,12 @@ export default class CoffeeBeansController {
     coffeeBean.origin = origin;
     coffeeBean.roastingLevel = roastingLevel;
     coffeeBean.price = price;
-    
+
     await coffeeBean.save();
     return response.ok(coffeeBean);
   }
 
-  public async delete({request, response}){
+  public async delete({ request, response }) {
     const shopId = await Shop.find({ userId: request["user"]!.userId });
     const coffeeBeanId = request.input("coffeeBeanId");
     if (!coffeeBeanId)
@@ -65,7 +79,4 @@ export default class CoffeeBeansController {
     await coffeeBean.delete();
     return response.noContent();
   }
-
-
-
 }
