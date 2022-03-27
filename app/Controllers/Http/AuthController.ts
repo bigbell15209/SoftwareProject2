@@ -95,6 +95,7 @@ export default class AuthController {
     const token = jwt.sign({ sub: user["userId"] }, Env.get("JWT_SECRET"), {
       expiresIn: "7d",
     });
-    return { user, token };
+    const shop = user["userType"] === 2 ? await Shop.findOne({ userId: user["userId"] }) : null;
+    return { user, token, shop };
   }
 }
