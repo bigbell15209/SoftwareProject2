@@ -10,8 +10,13 @@ export default class JwtAuth {
     next: () => Promise<void>
   ) {
     const token = request.headers().authorization?.replace("Bearer ", "");
-    if (!token || !jwt.verify(token, Env.get("JWT_SECRET")))
-      return response.unauthorized({ error: "Invalid token." });
+    if (!token) return response.unauthorized({ error: "Invalid token." });
+    try {
+      jwt.verify(token, Env.get("JWT_SECRET"));
+    } catch (error) {
+      return response.unauthorized({ error: "Token is expired or invalid." });
+    }
+
     request["user"] = await User.findOne({ userId: jwt.decode(token).sub });
     await next();
   }
