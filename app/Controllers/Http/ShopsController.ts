@@ -1,3 +1,9 @@
+/*
+Author: Max Martin
+2022 April 9
+This class contains the logic for exposing shop info to customers
+*/
+
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 const mongoose = require("mongoose");
 const Shop = mongoose.model("Shop");
@@ -13,17 +19,18 @@ export default class ShopsController {
     const allShops = await Shop.find();
     const shops: object[] = [];
     for (let i = 0; i < allShops.length; i++) {
-      const beans = (await CoffeeBean.find({ shopId: allShops[i].shopId }))
-      .map(bean => ({
-        coffeeBeanId: bean.coffeeBeanId,
-        shopId: bean.shopId,
-        name: bean.name,
-        description: bean.description,
-        price: bean.price,
-        specie: bean.specie,
-        origin: bean.origin,
-        roastingLevel: bean.roastingLevel,
-      }))
+      const beans = (await CoffeeBean.find({ shopId: allShops[i].shopId })).map(
+        (bean) => ({
+          coffeeBeanId: bean.coffeeBeanId,
+          shopId: bean.shopId,
+          name: bean.name,
+          description: bean.description,
+          price: bean.price,
+          specie: bean.specie,
+          origin: bean.origin,
+          roastingLevel: bean.roastingLevel,
+        })
+      );
       const shop = {
         shopId: allShops[i].shopId,
         name: allShops[i].name,
