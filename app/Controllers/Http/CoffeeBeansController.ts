@@ -1,3 +1,9 @@
+/*
+Author: Max Martin
+2022 April 9
+This class contains the logic for CRUD operations on products
+*/
+
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 const mongoose = require("mongoose");
 const CoffeeBean = mongoose.model("CoffeeBean");
@@ -11,10 +17,11 @@ export default class CoffeeBeansController {
     const coffeeBeans = await CoffeeBean.find({ shopId: shop.shopId });
     return coffeeBeans;
   }
+
   public async create({ request, response }) {
     const userId = request["user"]!.userId;
     const shop = await Shop.findOne({ userId });
-
+    if (!shop) return response.notFound({ error: "Shop not found" });
     const { name, description, specie, origin, roastingLevel, price } =
       request.body();
 

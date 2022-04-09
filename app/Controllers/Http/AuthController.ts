@@ -1,3 +1,9 @@
+/*
+Author: Max Martin
+2022 April 9
+This class contains all authentication logic
+*/
+
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import mongoose from "mongoose";
 import Env from "@ioc:Adonis/Core/Env";
@@ -9,11 +15,11 @@ import createShop from "App/Helpers/CreateShop";
 const Shop = mongoose.model("Shop");
 
 export default class AuthController {
+  //Allows users to create new accounts, returns the new account info
   public async signUp({ request, response }: HttpContextContract) {
     const { email, userType, password, address, firstName, lastName } =
       request.all();
     const validator = require("email-validator");
-    //TODO add null validation for address
     if (!userType || [1, 2].indexOf(userType) === -1)
       return response.badRequest({ error: "User type is invalid." });
     if (!firstName || !lastName)
@@ -38,7 +44,7 @@ export default class AuthController {
       });
 
     const userId = uuid();
-      let newShop = null;
+    let newShop = null;
     if (userType === 2) {
       const { shop } = request.body();
       if (!shop)
@@ -69,7 +75,8 @@ export default class AuthController {
       expiresIn: "7d",
     });
     const newUser = await User.findOne({ userId });
-    if (newShop) newUser!["shop"] = await Shop.findOne({ shopId: newShop["shopId"] });
+    if (newShop)
+      newUser!["shop"] = await Shop.findOne({ shopId: newShop["shopId"] });
     return response.created({
       user: newUser,
       token,
@@ -95,7 +102,10 @@ export default class AuthController {
     const token = jwt.sign({ sub: user["userId"] }, Env.get("JWT_SECRET"), {
       expiresIn: "7d",
     });
-    const shop = user["userType"] === 2 ? await Shop.findOne({ userId: user["userId"] }) : null;
+    const shop =
+      user["userType"] === 2
+        ? await Shop.findOne({ userId: user["userId"] })
+        : null;
     return { user, token, shop };
   }
 }

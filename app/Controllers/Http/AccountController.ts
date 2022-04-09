@@ -1,22 +1,28 @@
+/*
+Author: Max Martin
+2022 April 9
+This class contains the logic for all routes related to accounts
+*/
+
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 const mongoose = require("mongoose");
 import Hash from "@ioc:Adonis/Core/Hash";
 const User = mongoose.model("User");
 
+
+
 export default class AccountController {
+
+  //Returns the current user info
   public async me({request, response}){
     const user = request["user"]!;
     return user
   }
+
+  //Updates the user's info
   public async update({ request, response }: HttpContextContract) {
     const user = request["user"]!;
     const { firstName, lastName, address } = request.body();
-
-  
-    
-    
-    
-    
     //TODO add empty string validations
     user.firstName = firstName.length > 0 ? firstName : user.firstName;
     user.lastName = lastName.length > 0 ? lastName : user.lastName;
@@ -35,6 +41,7 @@ export default class AccountController {
     
   }
 
+  //Updates the user's password
   public async changePassword({ request, response }: HttpContextContract) {
     const user = request["user"]!;
     const { oldPassword, newPassword } = request.body();
