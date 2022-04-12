@@ -1,5 +1,5 @@
 /*
-Author: Eunbee Lee (301083645)
+Authors: Max Martin (301117493), Eunbee Lee (301083645), Jihyeok Kim (301105279), Wooram Moon (301098673), Hankyu Shin (301090893), Manpreet Kaur (301175898)
 2022 April 9
 This class contains all authentication logic
 */
