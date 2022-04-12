@@ -1,5 +1,5 @@
 /*
-Author: Max Martin
+Author: Jihyeok Kim (301105279)
 2022 April 9
 This class contains the logic for CRUD operations on products
 */

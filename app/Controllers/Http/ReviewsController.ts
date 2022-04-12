@@ -1,5 +1,5 @@
 /*
-Author: Max Martin
+Author: Wooram Moon (301098673)
 2022 April 9
 This class contains the logic for getting and submitting reviews
 */

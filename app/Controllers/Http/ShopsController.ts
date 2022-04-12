@@ -1,5 +1,5 @@
 /*
-Author: Max Martin
+Author: Manpreet Kaur (301175898)
 2022 April 9
 This class contains the logic for exposing shop info to customers
 */

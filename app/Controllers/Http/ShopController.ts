@@ -1,5 +1,5 @@
 /*
-Author: Max Martin
+Author: Hankyu Shin (301090893)
 2022 April 9
 This class contains the logic for storeowners
 */

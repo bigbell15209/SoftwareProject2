@@ -1,5 +1,5 @@
 /*
-Author: Max Martin
+Author: Eunbee Lee (301083645)
 2022 April 9
 This class contains all authentication logic
 */

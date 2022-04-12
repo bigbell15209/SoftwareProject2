@@ -1,5 +1,5 @@
 /*
-Author: Max Martin
+Author: Max Martin (301117493)
 2022 April 9
 This class contains the logic for all routes related to accounts
 */
